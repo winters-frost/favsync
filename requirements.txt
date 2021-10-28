@@ -1,0 +1,8 @@
+requests
+praw
+imgurpython
+beautifulsoup4
+lxml
+selenium
+youtube_dl
+configargparse
