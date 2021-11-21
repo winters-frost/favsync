@@ -20,7 +20,7 @@ def favsync():
     logging.basicConfig(filename=options.log_file, filemode="w", level=options.log_level,
                         format="[%(asctime)s - %(levelname)s] - %(message)s")
 
-    # Check settings from config if not specified in command line
+    # Validate options
     if options.num_threads < 1:
         print(f"Invalid number of threads specified: {options.num_threads}", file=sys.stderr)
         return
@@ -80,16 +80,16 @@ def parse_options():
     """Parses command line arguments, config file settings, and environment variables"""
     parser = configargparse.ArgParser(default_config_files=["/etc/favsync.conf", "~/.favsync"],
                                       description="Retrieves media files from a reddit account's saved posts")
-    parser.add_argument("-d", "--output-dir", required=True, env_var="OUTPUT_DIR",
+    parser.add_argument("-d", "--output-dir", env_var="OUTPUT_DIR", required=True,
                         help="Directory to download media files to")
     parser.add_argument("-c", "--config", is_config_file=True, env_var="FAVSYNC_CONFIG", help="Config file path")
-    parser.add_argument("--client-id", type=str, required=True, env_var="REDDIT_CLIENT_ID",
+    parser.add_argument("--client-id", type=str, env_var="REDDIT_CLIENT_ID", required=True,
                         help="The reddit API client id")
-    parser.add_argument("--client-secret", type=str, required=True, env_var="REDDIT_CLIENT_SECRET",
+    parser.add_argument("--client-secret", type=str, env_var="REDDIT_CLIENT_SECRET", required=True,
                         help="The reddit API client secret")
-    parser.add_argument("--user", type=str, required=True, env_var="REDDIT_USER",
+    parser.add_argument("--user", type=str, env_var="REDDIT_USER", required=True,
                         help="Reddit username to authenticate")
-    parser.add_argument("--password", type=str, required=True, env_var="REDDIT_PASS", help="Reddit user password")
+    parser.add_argument("--password", type=str, env_var="REDDIT_PASS", required=True, help="Reddit user password")
     parser.add_argument("--user-agent", type=str, default="favsync", env_var="USER_AGENT",
                         help="The user agent string to use while accessing the reddit API")
     parser.add_argument("--num-threads", type=int, default=4, env_var="NUM_THREADS",
@@ -106,7 +106,7 @@ def parse_options():
                         help="Minimum severity of log level to log")
     parser.add_argument("--prefer-mp4", action="store_true", env_var="PREFER_MP4",
                         help="Prioritize mp4 files over other available formats")
-    parser.add_argument("--limit", type=int, default=None, env_var="LIMIT",
+    parser.add_argument("--limit", type=int, default=1024, env_var="LIMIT",
                         help="Limit the number of posts to retrieve")
     parser.add_argument("--remove-saved", action="store_true", env_var="REMOVE_SAVED",
                         help="Remove posts from saved once retrieved or if post media doesn't exist")
