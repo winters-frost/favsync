@@ -51,6 +51,8 @@ class DownloadThread(threading.Thread):
             if os.path.exists(path):
                 # File already exists
                 logging.warning(f"[ThreadID {str(self.ident)}] {dest_filename} already exists, skipping... (URL: {str(url)})")
+                if self.options.remove_saved:
+                    entry["post"].unsave()
                 continue
 
             # Download the file
