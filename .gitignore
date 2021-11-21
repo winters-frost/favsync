@@ -125,3 +125,4 @@ praw.ini
 
 # Ignore target_dir if in project directory
 target_dir/
+favsync.cfg

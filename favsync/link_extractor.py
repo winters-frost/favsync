@@ -21,12 +21,16 @@ def extract_media_links(saved_list, remove_saved=False):
     """Extracts the direct links to the media contained within each saved post"""
     links = []
     for post in saved_list:
-        site_links = _extract_media_link(post, remove_saved)
-        if len(site_links) > 0:
-            entry = {"post": post, "links": site_links}
-            links.append(entry)
-        else:
-            logging.warning(f"No supported media found in post ID: {post.id}. Post URL: {post.url}")
+        try:
+            site_links = _extract_media_link(post, remove_saved)
+            if len(site_links) > 0:
+                entry = {"post": post, "links": site_links}
+                links.append(entry)
+            else:
+                logging.warning(f"No supported media found in post ID: {post.id}. Post URL: {post.url}")
+        except Exception as e:
+            logging.error(f"Encountered error while extracting link. Post ID: {post.id}. Post URL: {post.url}. Error: "
+                          f"{e.message if hasattr(e, 'message') else e}")
 
     return links
 
@@ -109,7 +113,7 @@ def _get_link_type(post):
         return VREDDIT
     elif domain == "instagram.com":
         return INSTAGRAM
-    elif domain == "reddit.com" and post.is_gallery:
+    elif domain == "reddit.com" and hasattr(post, 'is_gallery') and post.is_gallery:
         return RGALLERY
     elif enable_ytdl:
         # Try to download using youtube-dl

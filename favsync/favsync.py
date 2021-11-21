@@ -82,7 +82,7 @@ def parse_options():
                                       description="Retrieves media files from a reddit account's saved posts")
     parser.add_argument("-d", "--output-dir", required=True, env_var="OUTPUT_DIR",
                         help="Directory to download media files to")
-    parser.add_argument("-c", "--config", is_config_file=True, help="Config file path")
+    parser.add_argument("-c", "--config", is_config_file=True, env_var="FAVSYNC_CONFIG", help="Config file path")
     parser.add_argument("--client-id", type=str, required=True, env_var="REDDIT_CLIENT_ID",
                         help="The reddit API client id")
     parser.add_argument("--client-secret", type=str, required=True, env_var="REDDIT_CLIENT_SECRET",
