@@ -51,26 +51,31 @@ class DownloadThread(threading.Thread):
             if os.path.exists(path):
                 # File already exists
                 logging.warning(f"[ThreadID {str(self.ident)}] {dest_filename} already exists, skipping... (URL: {str(url)})")
-                if self.options.remove_saved:
+                if self.options.remove_saved and not self.options.dry_run:
                     entry["post"].unsave()
                 continue
 
             # Download the file
-            logging.debug(f"[ThreadID {str(self.ident)}] Attempting to download {filename} (URL: {str(url)})")
-            # If file is a CDN object, then download with youtube-dl
-            r = requests.get(url, stream=True)
-            if r.status_code == 200:
-                with open(path, 'wb') as f:
-                    for chunk in r:
-                        f.write(chunk)
-                self.successCounter += 1
-                logging.info(f"[ThreadID {str(self.ident)}] Successfully downloaded {filename} (URL: {str(url)})")
-
-                # Remove from saved if specified
-                if self.options.remove_saved:
-                    entry["post"].unsave()
+            if self.options.dry_run:
+                logging.info(f"[ThreadID {str(self.ident)}] Skipping download: {filename} (URL: {str(url)})")
+                if not self.options.silent:
+                    print(f"[ThreadID {str(self.ident)}] Skipping download: {filename} (URL: {str(url)})")
             else:
-                logging.error(f"[ThreadID {str(self.ident)}] Failed to download {filename} (URL: {str(url)})")
+                logging.debug(f"[ThreadID {str(self.ident)}] Attempting to download {filename} (URL: {str(url)})")
+                # If file is a CDN object, then download with youtube-dl
+                r = requests.get(url, stream=True)
+                if r.status_code == 200:
+                    with open(path, 'wb') as f:
+                        for chunk in r:
+                            f.write(chunk)
+                    self.successCounter += 1
+                    logging.info(f"[ThreadID {str(self.ident)}] Successfully downloaded {filename} (URL: {str(url)})")
+
+                    # Remove from saved if specified
+                    if self.options.remove_saved:
+                        entry["post"].unsave()
+                else:
+                    logging.error(f"[ThreadID {str(self.ident)}] Failed to download {filename} (URL: {str(url)})")
 
     def get_filename(self, url):
         # Check if this URL needs any special handling to get the file name
