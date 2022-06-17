@@ -110,6 +110,8 @@ def parse_options():
                         help="Limit the number of posts to retrieve")
     parser.add_argument("--remove-saved", action="store_true", env_var="REMOVE_SAVED",
                         help="Remove posts from saved once retrieved or if post media doesn't exist")
+    parser.add_argument("--dry-run", action="store_true", env_var="DRY_RUN",
+                        help="Run the tool without downloading any files")
 
     return parser.parse_args()
 
